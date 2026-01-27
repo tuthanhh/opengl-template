@@ -6,10 +6,11 @@ ninja = "latest"
 [env]
 BUILD_DIR = "build"
 PROJECT_NAME = "opengl-template"
+_.python.venv = { path = ".venv", create = true, uv_create_args = ["--seed"] }
 
 [tasks.setup]
 description = "Install required Python packages for GLAD"
-run = "pip install jinja2"
+run = ".venv/bin/pip install jinja2"
 
 # --- Configuration Tasks ---
 [tasks."configure:debug"]
