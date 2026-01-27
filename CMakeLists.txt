@@ -4,6 +4,7 @@ cmake_minimum_required(VERSION 3.14)
 project(opengl-template LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 20)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # --- 1. BOOTSTRAP CPM (The "No Manual Download" part) ---
 set(CPM_DOWNLOAD_VERSION 0.42.1)
 set(CPM_DOWNLOAD_LOCATION "${CMAKE_BINARY_DIR}/cmake/CPM_${CPM_DOWNLOAD_VERSION}.cmake")
