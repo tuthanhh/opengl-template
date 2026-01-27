@@ -1,0 +1,51 @@
+[tools]
+# Mise will automatically download and shim these versions for this project
+cmake = "latest"
+python = "latest" # Required for GLAD 2 generation
+ninja = "latest"  # A faster build system than Make
+
+[env]
+# Define variables usable in tasks
+BUILD_DIR = "build"
+PROJECT_NAME = "opengl-template" # Must match project() name in CMakeLists.txt
+
+# --- NEW TASK: Install Python deps ---
+[tasks.setup]
+description = "Install required Python packages for GLAD"
+run = "pip install jinja2"
+
+[tasks.configure]
+description = "Generate build files using CMake and Ninja"
+# Only re-run if CMakeLists.txt changes
+sources = ["CMakeLists.txt"]
+outputs = ["{{env.BUILD_DIR}}/build.ninja"]
+depends = ["setup"]
+# -G Ninja uses the ninja build system we installed above
+run = "cmake -B {{env.BUILD_DIR}} -G Ninja -DCMAKE_BUILD_TYPE=Release"
+
+[tasks.build]
+alias = "b"
+description = "Compile the project"
+depends = ["configure"] # Automatically runs configure if missing
+# Only re-run if source files change
+sources = ["src/**/*.cpp", "src/**/*.h", "CMakeLists.txt"]
+run = "cmake --build {{env.BUILD_DIR}}"
+
+[tasks.run]
+alias = "r"
+description = "Build and run the executable (Cross-platform)"
+depends = ["build"]
+# We ask CMake to run the 'run' target we defined.
+# It automatically handles finding the .exe and path separators.
+run = "cmake --build {{env.BUILD_DIR}} --target run"
+
+[tasks.clean]
+description = "Remove the build directory (Cross-platform)"
+# cmake -E is a utility mode that lets you run filesystem commands
+# safely on any OS (replaces 'rm -rf')
+run = "cmake -E remove_directory {{env.BUILD_DIR}}"
+
+[tasks.format]
+description = "Format C++ source code"
+# Note: Ensure you have clang-format installed or add it to [tools] if available
+run = "clang-format -i src/*.cpp"

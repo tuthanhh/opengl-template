@@ -1,0 +1,37 @@
+---
+Language: Cpp
+BasedOnStyle: LLVM
+
+# Modern C++ Settings
+Standard: Latest
+IndentWidth: 4
+ColumnLimit: 100
+
+# Visuals & Spacing
+AllowShortFunctionsOnASingleLine: Empty
+BinPackArguments: false
+BinPackParameters: false
+AlignAfterOpenBracket: Align
+AlignConsecutiveAssignments: false
+AlignConsecutiveDeclarations: false
+
+# Braces
+BreakBeforeBraces: Attach
+# If you prefer braces on new lines (Allman style), change to:
+# BreakBeforeBraces: Allman
+
+# Graphics-specific readability
+SpaceAfterTemplateKeyword: true
+PointerAlignment: Left
+FixNamespaceComments: true
+
+# Keep includes organized (GLAD must usually come before GLFW)
+SortIncludes: true
+IncludeCategories:
+    - Regex: "^<glad/.*"
+      Priority: 1
+    - Regex: "^<GLFW/.*"
+      Priority: 2
+    - Regex: "^<.*"
+      Priority: 3
+...
