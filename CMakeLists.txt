@@ -44,7 +44,7 @@ if(glad_SOURCE_DIR)
     glad_add_library(glad STATIC REPRODUCIBLE LOADER LANGUAGE C API gl:core=3.3)
 endif()
 
-
+find_package(OpenGL REQUIRED)
 
 add_executable(${PROJECT_NAME} src/main.cpp)
 
@@ -52,6 +52,7 @@ add_executable(${PROJECT_NAME} src/main.cpp)
 target_link_libraries(${PROJECT_NAME} PRIVATE
     glfw
     glad
+    OpenGL::GL
 )
 
 # Handle Linux-specific math library requirement if necessary
