@@ -2,14 +2,6 @@
 
 A minimal, modern C++ OpenGL project template with zero manual dependency installation. Uses CPM (CMake Package Manager) to automatically fetch GLFW and GLAD.
 
-## Features
-
-✨ **Zero manual dependency installation** - CPM handles GLFW and GLAD automatically  
-✨ **Modern CMake practices** - Target-based linking, C++20 support  
-✨ **Cross-platform** - Works on Linux, macOS, and Windows  
-✨ **OpenGL 3.3 Core Profile** - Modern OpenGL ready  
-✨ **Optional mise integration** - Automated build tasks and tool management
-
 ## Prerequisites
 
 ### Required for All Platforms
@@ -23,7 +15,21 @@ A minimal, modern C++ OpenGL project template with zero manual dependency instal
    - **macOS**: Xcode Command Line Tools (Clang)
    - **Windows**: Visual Studio 2019+ or MinGW-w64
 
-3. **Internet Connection** (first build only)
+
+3. **Python 3.x with jinja2** (for GLAD code generation)  
+   - GLAD 2.x uses Python and jinja2 to generate OpenGL loader code  
+   - **If using mise**: Automatically handled  
+   - **If using standard CMake**: Install manually:  
+   
+   ```bash
+   # Check if Python is installed
+   python --version  # or python3 --version  
+   
+   # Install jinja2
+   pip install jinja2  # or pip3 install jinja2
+
+
+4. **Internet Connection** (first build only)
    - Required for CPM to download dependencies automatically
 
 ### Platform-Specific Requirements
@@ -100,18 +106,18 @@ mkdir build
 cd build
 
 # Configure and build
-cmake ..
-cmake --build .
+cmake -S . -B build
+cmake --build build
 
 # Run the executable
-./opengl-template       # Linux/macOS
-.\opengl-template.exe   # Windows
+./build/opengl-template       # Linux/macOS
+./build\opengl-template.exe   # Windows
 ```
 
 #### Using the Custom Run Target
 ```bash
-# Build and run in one command
-cmake --build . --target run
+# Replace `cmake --build build` and manually run the executable
+cmake --build build --target run
 ```
 
 #### Debug vs Release Builds
@@ -133,29 +139,6 @@ cmake -B build -G Ninja
 cmake --build build
 ```
 
-## Project Structure
-
-```
-opengl-template/
-├── CMakeLists.txt      # CMake configuration with CPM
-├── mise.toml           # mise task automation (optional)
-├── src/
-│   └── main.cpp        # Main OpenGL application
-└── build/              # Generated build files (gitignored)
-```
-
-## Customization
-
-1. **Change project name**: Edit `project(opengl-template ...)` in `CMakeLists.txt`
-2. **Add source files**: Add them to `add_executable()` in `CMakeLists.txt`
-3. **Add dependencies**: Use `CPMAddPackage()` to fetch more libraries
-
-## Dependencies (Auto-downloaded)
-
-- **GLFW 3.4** - Windowing and input handling
-- **GLAD 2.0.8** - OpenGL function loader (Core Profile 3.3)
-- **CPM.cmake 0.42.1** - CMake package manager
-
 ## Troubleshooting
 
 ### "Failed to initialize GLAD" Error
@@ -167,7 +150,6 @@ opengl-template/
 # Check OpenGL version
 glxinfo | grep "OpenGL version"
 ```
-
 **On macOS**: Update to the latest macOS version and Xcode
 
 ### CMake Cannot Find OpenGL
@@ -181,7 +163,3 @@ sudo dnf install mesa-libGL-devel # Fedora/RHEL
 ## License
 
 This template is released under the MIT License. Feel free to use it for any project!
-
----
-
-**Need help?** Open an issue on GitHub or check the [GLFW documentation](https://www.glfw.org/docs/latest/) and [OpenGL tutorials](https://learnopengl.com/).
