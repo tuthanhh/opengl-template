@@ -160,6 +160,26 @@ sudo apt install libgl1-mesa-dev  # Ubuntu/Debian
 sudo dnf install mesa-libGL-devel # Fedora/RHEL
 ```
 
+### clangd Cannot Find `glad/gl.h` or Shows Include Errors
+
+The `.clangd` file is configured to use `build/debug` as the CompilationDatabase. GLAD headers (`glad/gl.h`) are only generated during the build process, not during configuration.
+
+**Solution:**
+1. Make sure you've built the project at least once:
+   ```bash
+   cmake -B build/debug -DCMAKE_BUILD_TYPE=Debug
+   cmake --build build/debug
+   ```
+
+2. If using a different build directory (e.g., `build/release`), update the `CompilationDatabase` path in `.clangd`:
+   ```yaml
+   CompileFlags:
+       CompilationDatabase: build/release  # Change to match your build directory
+   ```
+
+3. Restart your LSP server (clangd) in your editor.
+
+
 ## License
 
 This template is released under the MIT License. Feel free to use it for any project!
