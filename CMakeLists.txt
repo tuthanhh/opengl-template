@@ -8,13 +8,14 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # --- 1. BOOTSTRAP CPM (The "No Manual Download" part) ---
 set(CPM_DOWNLOAD_VERSION 0.42.1)
 set(CPM_DOWNLOAD_LOCATION "${CMAKE_BINARY_DIR}/cmake/CPM_${CPM_DOWNLOAD_VERSION}.cmake")
+set(Python_EXECUTABLE "${CMAKE_SOURCE_DIR}/.venv/bin/python" CACHE FILEPATH "Python interpreter")
 
 if(NOT EXISTS "${CPM_DOWNLOAD_LOCATION}")
-    message(STATUS "Downloading CPM.cmake to ${CPM_DOWNLOAD_LOCATION}")
-    file(DOWNLOAD
-         https://github.com/cpm-cmake/CPM.cmake/releases/download/v${CPM_DOWNLOAD_VERSION}/CPM.cmake
-         "${CPM_DOWNLOAD_LOCATION}"
-    )
+	message(STATUS "Downloading CPM.cmake to ${CPM_DOWNLOAD_LOCATION}")
+	file(DOWNLOAD
+									https://github.com/cpm-cmake/CPM.cmake/releases/download/v${CPM_DOWNLOAD_VERSION}/CPM.cmake
+									"${CPM_DOWNLOAD_LOCATION}"
+				)
 endif()
 include("${CPM_DOWNLOAD_LOCATION}")
 
@@ -22,27 +23,27 @@ include("${CPM_DOWNLOAD_LOCATION}")
 
 # Fetch GLFW (Windowing)
 CPMAddPackage(
-    NAME glfw
-    GITHUB_REPOSITORY glfw/glfw
-    GIT_TAG 3.4
-    OPTIONS
-        "GLFW_BUILD_DOCS OFF"
-        "GLFW_BUILD_EXAMPLES OFF"
-        "GLFW_BUILD_TESTS OFF"
-        "GLFW_INSTALL OFF"
+				NAME glfw
+				GITHUB_REPOSITORY glfw/glfw
+				GIT_TAG 3.4
+				OPTIONS
+								"GLFW_BUILD_DOCS OFF"
+								"GLFW_BUILD_EXAMPLES OFF"
+								"GLFW_BUILD_TESTS OFF"
+								"GLFW_INSTALL OFF"
 )
 
 # Fetch GLAD (OpenGL Loader)
 CPMAddPackage(
-    NAME glad
-    GITHUB_REPOSITORY Dav1dde/glad
-    VERSION 2.0.8
-    DOWNLOAD_ONLY YES
+				NAME glad
+				GITHUB_REPOSITORY Dav1dde/glad
+				VERSION 2.0.8
+				DOWNLOAD_ONLY YES
 )
 
 if(glad_SOURCE_DIR)
-    add_subdirectory(${glad_SOURCE_DIR}/cmake glad-cmake)
-    glad_add_library(glad STATIC REPRODUCIBLE LOADER LANGUAGE C API gl:core=3.3)
+	add_subdirectory(${glad_SOURCE_DIR}/cmake glad-cmake)
+	glad_add_library(glad STATIC REPRODUCIBLE LOADER LANGUAGE C API gl:core=3.3)
 endif()
 
 find_package(OpenGL REQUIRED)
@@ -51,19 +52,12 @@ add_executable(${PROJECT_NAME} src/main.cpp)
 
 # Target-based linking (Modern Best Practice)
 target_link_libraries(${PROJECT_NAME} PRIVATE
-    glfw
-    glad
-    OpenGL::GL
+				glfw
+				glad
+				OpenGL::GL
 )
 
 # Handle Linux-specific math library requirement if necessary
 if(UNIX AND NOT APPLE)
-    target_link_libraries(${PROJECT_NAME} PRIVATE m)
+	target_link_libraries(${PROJECT_NAME} PRIVATE m)
 endif()
-
-add_custom_target(run
-    COMMAND $<TARGET_FILE:${PROJECT_NAME}>
-    DEPENDS ${PROJECT_NAME}
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-    USES_TERMINAL
-)
